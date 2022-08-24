@@ -7,7 +7,7 @@ const cell = {
 const gameField = {
 	top: 0,
 	right: cell.width * 5,
-	bottom: cell.height * 6,
+	bottom: cell.height * 5,
 	left: 0
 };
 
