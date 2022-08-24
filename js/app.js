@@ -28,13 +28,13 @@ const sprite = {
 
 const speed = () => enemySpeed.min + Math.floor(Math.random() * enemySpeed.max);
 const crash = 70;
-
+const border = 20;
 
 class Enemy {
 	constructor ( x, y, speed, player) {
 		this.x = x;
 		this.y = y;
-		this.speed = speed;
+		this.speed = speed();
 		this.player = player;
 		this.sprite = sprite.enemy;
 	}	
@@ -101,7 +101,8 @@ class Player {
 
 const player = new Player(playerStart.x, playerStart.y);
 
-const allEnemies = [63, 147, 230].map(value => {return new Enemy( 0, value, 222, player);}); //need to change
+const allEnemies = [cell.height - border, cell.height*2 - border, cell.height*3 - border]
+				   .map(value => {return new Enemy(gameField.left, value, speed, player);});
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
