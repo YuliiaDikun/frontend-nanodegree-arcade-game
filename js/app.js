@@ -1,4 +1,5 @@
-// Enemies our player must avoid
+"use srtict";
+
 const cell = {
 	width: 100,
 	height: 85
@@ -30,76 +31,71 @@ const speed = () => enemySpeed.min + Math.floor(Math.random() * enemySpeed.max);
 const crash = 70;
 const border = 20;
 
-class Enemy {
-	constructor ( x, y, speed, player) {
-		this.x = x;
-		this.y = y;
+const Enemy = function (x, y, speed, player) {
+	this.x = x;
+	this.y = y;
+	this.speed = speed();
+	this.player = player;
+	this.sprite = sprite.enemy;
+};
+
+Enemy.prototype.checkColission = function () {
+	if(this.player.x + crash > this.x &&
+	this.player.x < this.x + crash &&
+	this.player.y + crash > this.y &&
+	this.player.y < this.y + crash) {
+	this.player.x = playerStart.x;
+	this.player.y = playerStart.y;
+	}
+};
+
+Enemy.prototype.update = function (dt) {
+	if (this.x > gameField.right) {
+		this.x -= gameField.right;
 		this.speed = speed();
-		this.player = player;
-		this.sprite = sprite.enemy;
+		}
+	this.x += this.speed * dt;
+	this.checkColission();
+};
+
+Enemy.prototype.render = function () {
+	ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+};
+
+const Player = function () {
+	this.x = playerStart.x;
+	this.y = playerStart.y;
+	this.sprite = sprite.player;
+};
+
+Player.prototype.update = function (dt) {};
+
+Player.prototype.handleInput = function (keyPress) {
+	if (keyPress == 'left' && this.x > gameField.left + cell.width) {
+		this.x -= cell.width;
+		}
+	if (keyPress == 'right' && this.x < gameField.right - cell.width) {
+		this.x += cell.width;
+	}
+	if (keyPress == 'up' && this.y > gameField.top) {
+		this.y -= cell.height;
+	}
+	if (keyPress == 'down' && this.y < gameField.bottom - cell.height) {
+		this.y += cell.height;
 	}	
-
-	checkCollisions () {
-		if(this.player.x + crash > this.x &&
-		   this.player.x < this.x + crash &&
-		   this.player.y + crash > this.y &&
-		   this.player.y < this.y + crash) {
-			this.player.x = playerStart.x;
-			this.player.y = playerStart.y;
-			}
-	}
-
-	update (dt) {		
-		if (this.x > gameField.right) {
-			this.x -= gameField.right;
-			this.speed = speed();
-		}
-		this.x += this.speed * dt;
-		this.checkCollisions();
-	}
-
-	render () {
-        ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-    }
-}
-
-class Player {
-	constructor() {
+	else if (this.y  < gameField.top) {			
 		this.x = playerStart.x;
-		this.y = playerStart.y;
-		this.sprite = sprite.player;
-	}
+		this.y = playerStart.y;	
+		alert('You win!');	
+	}		
+};
 
-	update () {			
-		}
-	
+Player.prototype.render = function () {
+	ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+};
 
-	handleInput (keyPress) {
-		if (keyPress == 'left' && this.x > gameField.left + cell.width) {
-			this.x -= cell.width;
-		}
-		if (keyPress == 'right' && this.x < gameField.right - cell.width) {
-			this.x += cell.width;
-		}
-		if (keyPress == 'up' && this.y > gameField.top) {
-			this.y -= cell.height;
-		}
-		if (keyPress == 'down' && this.y < gameField.bottom - cell.height) {
-			this.y += cell.height;
-		}	
-		else if (this.y  < gameField.top) {			
-			this.x = playerStart.x;
-			this.y = playerStart.y;	
-			alert('You win!');	
-		}		
-	}
-
-	render () {
-        ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-    }
-}
-
-const player = new Player(playerStart.x, playerStart.y);
+const player = Object.assign(Player.prototype);
+// const player = new Player(playerStart.x, playerStart.y);
 
 const allEnemies = [cell.height - border, cell.height*2 - border, cell.height*3 - border]
 				   .map(value => {return new Enemy(gameField.left, value, speed, player);});
