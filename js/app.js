@@ -29,7 +29,7 @@ const SPRITE = {
 
 const SPEED = () => ENEMY_SPEED.min + Math.floor(Math.random() * ENEMY_SPEED.max);
 const OVERLAP_AMOUNT = 70;
-const border = 20;
+const BORDER = 20;
 
 const Enemy = function (x, y, SPEED, player) {
 	this.x = x;
@@ -96,7 +96,7 @@ Player.prototype.render = function () {
 
 const player = new Player(PLAYER_START.x, PLAYER_START.y);
 
-const allEnemies = [CELL.height - border, CELL.height*2 - border, CELL.height*3 - border]
+const allEnemies = [CELL.height - BORDER, CELL.height*2 - BORDER, CELL.height*3 - BORDER]
 				   .map(value => {return new Enemy(GAME_FIELD.left, value, SPEED, player);});
 
 // This listens for key presses and sends the keys to your
